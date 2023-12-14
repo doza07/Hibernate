@@ -1,12 +1,15 @@
 package com.doza.jpa;
 
 import com.doza.jpa.dao.AppDAO;
+import com.doza.jpa.entity.Course;
 import com.doza.jpa.entity.Instructor;
 import com.doza.jpa.entity.InstructorDetail;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @SpringBootApplication
 public class JpaApplication {
@@ -18,25 +21,115 @@ public class JpaApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
-//		return runner -> {
-//			createInstructor(appDAO);
-//		};
-
-//		return runner -> {
-//			findInstructorById(appDAO);
-//		};
-
-//		return runner -> {
-//			deleteInstructorById(appDAO);
-//		};
-
-//		return runner -> {
-//			findInstructorDetailById(appDAO);
-//		};
-
 		return runner -> {
-			deleteInstructorDetailById(appDAO);
+			deleteCourseById(appDAO);
 		};
+	}
+
+	private void deleteCourseById(AppDAO appDAO) {
+		int id = 11;
+
+		System.out.println("Delete course: " + id);
+		appDAO.deleteCourseById(id);
+
+		System.out.println("DONE!");
+	}
+
+	private void updateCourse(AppDAO appDAO) {
+		int id = 10;
+
+		System.out.println("Find the course: " + id);
+		Course course = appDAO.findCourseById(id);
+
+		System.out.println("Updating course: " + id);
+		course.setTitle("TEST");
+
+		appDAO.update(course);
+
+		System.out.println("DONE!");
+
+
+	}
+
+	private void updateInstructor(AppDAO appDAO) {
+
+		int id = 1;
+
+		System.out.println("Find instructor: " + id);
+		Instructor instructor = appDAO.findInstructorById(id);
+
+		System.out.println("Updating instructor: " + id);
+		instructor.setLastName("TEST");
+
+		appDAO.update(instructor);
+
+		System.out.println("DONE");
+	}
+
+	private void findInstructorWithCoursesJoinFetch(AppDAO appDAO) {
+
+		int id = 1;
+
+		System.out.println("Find instructor id: " + id);
+
+		Instructor tempInstructor = appDAO.findInstructorByIdJoinFetch(id);
+
+		System.out.println("tempInstructor: " + tempInstructor);
+		System.out.println("The associated course: " + tempInstructor.getCourseList());
+
+		System.out.println("DONE!");
+
+
+	}
+
+	private void findCoursesForInstructor(AppDAO appDAO) {
+
+		int id = 1;
+		System.out.println("Find instructor id: " + id);
+
+		Instructor tempInstructor = appDAO.findInstructorById(id);
+
+		System.out.println("tempInstructor: " + tempInstructor);
+
+		System.out.println("Finding for instructor id: " + id);
+
+		List<Course> courseList = appDAO.findCoursesByInstructorId(id);
+
+		tempInstructor.setCourseList(courseList);
+
+		System.out.println("The associated course: " + tempInstructor.getCourseList());
+
+		System.out.println("DONE!");
+
+	}
+
+	private void createInstructorWithCourses(AppDAO appDAO) {
+
+		// create the instructor
+		Instructor instructor =
+				new Instructor("doza1", "doza1", "doza1@doza.com");
+
+		// create the instructor detail
+		InstructorDetail tempInstructorDetail =
+				new InstructorDetail(
+						"http://www.doza1.com/youtube",
+						"IT!!!");
+
+
+		// associate the objects
+		instructor.setInstructorDetail(tempInstructorDetail);
+
+		Course course1 = new Course("C1");
+		Course course2 = new Course("C2");
+
+		instructor.add(course1);
+		instructor.add(course2);
+
+		System.out.println("saving instructor - " + instructor);
+		System.out.println("The courses : " + instructor.getCourseList());
+		appDAO.save(instructor);
+
+		System.out.println("DONE!");
 	}
 
 
@@ -79,8 +172,10 @@ public class JpaApplication {
 	}
 
 	private void deleteInstructorById(AppDAO appDAO) {
-		int theId = 3;
+		int theId = 1;
+
 		appDAO.deleteInstructorById(theId);
+
 		System.out.println("Instructor with id: " + theId + " success deleted" );
 	}
 

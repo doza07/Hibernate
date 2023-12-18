@@ -4,6 +4,7 @@ import com.doza.jpa.dao.AppDAO;
 import com.doza.jpa.entity.Course;
 import com.doza.jpa.entity.Instructor;
 import com.doza.jpa.entity.InstructorDetail;
+import com.doza.jpa.entity.Review;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +23,45 @@ public class JpaApplication {
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
 		return runner -> {
-			deleteCourseById(appDAO);
+			deleteCourseAndReviews(appDAO);
 		};
+	}
+
+	private void deleteCourseAndReviews(AppDAO appDAO) {
+		int id = 10;
+
+		System.out.println("Deleting course: " + id);
+
+		appDAO.deleteCourseById(id);
+
+		System.out.println("DONE!");
+	}
+
+	private void retrieveCourseAndReviews(AppDAO appDAO) {
+
+		int id = 10;
+		Course course = appDAO.findCourseAndReviewsByCourseId(id);
+
+		System.out.println(course);
+
+		System.out.println(course.getReviewList());
+
+		System.out.println("DONE!");
+
+	}
+
+	private void createCourseAndReviews(AppDAO appDAO) {
+		Course course = new Course("TEST");
+
+		course.addReview(new Review("Some review"));
+		course.addReview(new Review("Bad review"));
+		course.addReview(new Review("Good review"));
+
+		System.out.println("Saving the course and reviews " + course + ", " + course.getReviewList());
+
+		appDAO.save(course);
+
+		System.out.println("DONE!");
 	}
 
 	private void deleteCourseById(AppDAO appDAO) {

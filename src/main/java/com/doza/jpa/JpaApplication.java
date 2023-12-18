@@ -1,10 +1,7 @@
 package com.doza.jpa;
 
 import com.doza.jpa.dao.AppDAO;
-import com.doza.jpa.entity.Course;
-import com.doza.jpa.entity.Instructor;
-import com.doza.jpa.entity.InstructorDetail;
-import com.doza.jpa.entity.Review;
+import com.doza.jpa.entity.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,8 +20,92 @@ public class JpaApplication {
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
 		return runner -> {
-			deleteCourseAndReviews(appDAO);
+			deleteStudent(appDAO);
 		};
+	}
+
+	private void deleteStudent(AppDAO appDAO) {
+
+		int id = 2;
+
+		System.out.println("Deleting student: " + id);
+		appDAO.deleteStudentById(id);
+
+		System.out.println("DONE!");
+	}
+
+	private void deleteCourse(AppDAO appDAO) {
+
+		int id = 10;
+
+		System.out.println("Deleting course: " + id);
+		appDAO.deleteCourseById(id);
+
+		System.out.println("DONE!");
+	}
+
+	private void addMoreCoursesForStudent(AppDAO appDAO) {
+		int id = 2;
+
+		Student student = appDAO.findStudentAndCoursesByStudentId(id);
+
+		Course course = new Course("newCourse");
+		Course course1 = new Course("newCourse1");
+
+		student.addCourse(course);
+		student.addCourse(course1);
+
+		System.out.println("Saving student: " + student);
+		System.out.println("associated course " + student.getCourseList());
+
+		appDAO.update(student);
+
+		System.out.println("DONE!");
+
+	}
+
+	private void findCoursesByStudentId(AppDAO appDAO) {
+		int id = 1;
+
+		Student student = appDAO.findStudentAndCoursesByStudentId(id);
+
+		System.out.println("Loaded student: " + student);
+		System.out.println("Student courses : " + student.getCourseList());
+
+		System.out.println("DONE!");
+	}
+
+	private void findCourseAndStudents(AppDAO appDAO) {
+		int id = 10;
+
+		Course course = appDAO.findCourseAndStudentsByCourseId(id);
+
+		System.out.println("Students : " + course.getStudentList());
+		System.out.println("Loaded : " + course);
+
+
+		System.out.println("DONE!");
+	}
+
+	private void createCourseAndStudents(AppDAO appDAO) {
+
+		Course course = new Course("test");
+
+		Student student = new Student("s", "s", "s");
+		Student student1 = new Student("s1", "s1", "s1");
+
+
+		course.addStudent(student);
+		course.addStudent(student1);
+
+
+		System.out.println("Saving the course: " + course);
+		System.out.println("Course's students: " + course.getStudentList());
+
+		appDAO.save(course);
+
+		System.out.println("DONE!");
+
 	}
 
 	private void deleteCourseAndReviews(AppDAO appDAO) {

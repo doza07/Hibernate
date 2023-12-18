@@ -4,6 +4,7 @@ package com.doza.jpa.dao;
 import com.doza.jpa.entity.Course;
 import com.doza.jpa.entity.Instructor;
 import com.doza.jpa.entity.InstructorDetail;
+import com.doza.jpa.entity.Student;
 
 import java.util.List;
 
@@ -34,5 +35,13 @@ public interface AppDAO {
     void save(Course course);
 
     Course findCourseAndReviewsByCourseId(int id);
+
+    Course findCourseAndStudentsByCourseId(int id);
+
+    Student findStudentAndCoursesByStudentId(int id);
+
+    void update(Student tempStudent);
+
+    void deleteStudentById(int id);
 
 }
